@@ -1,0 +1,59 @@
+{
+  "name": "local-lens",
+  "displayName": "Local Lens",
+  "description": "GitLens-style blame, hovers, CodeLens and history using only the local git CLI. No network, no telemetry.",
+  "version": "0.1.0",
+  "publisher": "local",
+  "license": "UNLICENSED",
+  "engines": { "vscode": "^1.80.0" },
+  "categories": ["SCM Providers"],
+  "main": "./extension.js",
+  "activationEvents": ["onStartupFinished"],
+  "extensionKind": ["workspace"],
+  "capabilities": {
+    "untrustedWorkspaces": { "supported": false, "description": "Runs git in the workspace." },
+    "virtualWorkspaces": false
+  },
+  "scripts": { "test": "node --test lib.test.js", "package": "sh build.sh" },
+  "contributes": {
+    "commands": [
+      { "command": "localLens.toggleFileBlame", "title": "Toggle File Blame", "category": "Local Lens", "icon": "$(person)" },
+      { "command": "localLens.toggleInlineBlame", "title": "Toggle Current Line Blame", "category": "Local Lens" },
+      { "command": "localLens.fileHistory", "title": "Show File History", "category": "Local Lens", "icon": "$(history)" },
+      { "command": "localLens.lineHistory", "title": "Show Line History", "category": "Local Lens" },
+      { "command": "localLens.repoHistory", "title": "Search Commits", "category": "Local Lens" },
+      { "command": "localLens.showCommit", "title": "Show Line Commit", "category": "Local Lens" },
+      { "command": "localLens.diffLineCommit", "title": "Open Line Commit Changes", "category": "Local Lens" },
+      { "command": "localLens.diffWithHead", "title": "Open Changes with HEAD", "category": "Local Lens", "icon": "$(git-compare)" },
+      { "command": "localLens.copySha", "title": "Copy Line Commit SHA", "category": "Local Lens" },
+      { "command": "localLens.diffCommit", "title": "Open Commit Changes", "category": "Local Lens" }
+    ],
+    "menus": {
+      "commandPalette": [{ "command": "localLens.diffCommit", "when": "false" }],
+      "editor/title": [
+        { "command": "localLens.toggleFileBlame", "when": "resourceScheme == file", "group": "navigation@100" },
+        { "command": "localLens.fileHistory", "when": "resourceScheme == file", "group": "navigation@101" }
+      ],
+      "editor/context": [
+        { "command": "localLens.lineHistory", "when": "resourceScheme == file", "group": "localLens@1" },
+        { "command": "localLens.fileHistory", "when": "resourceScheme == file", "group": "localLens@2" },
+        { "command": "localLens.diffLineCommit", "when": "resourceScheme == file", "group": "localLens@3" },
+        { "command": "localLens.copySha", "when": "resourceScheme == file", "group": "localLens@4" }
+      ],
+      "explorer/context": [
+        { "command": "localLens.fileHistory", "when": "resourceScheme == file && !explorerResourceIsFolder", "group": "localLens@1" }
+      ]
+    },
+    "keybindings": [
+      { "command": "localLens.toggleFileBlame", "key": "alt+b", "when": "editorTextFocus" }
+    ],
+    "configuration": {
+      "title": "Local Lens",
+      "properties": {
+        "localLens.inlineBlame.enabled": { "type": "boolean", "default": true, "description": "현재 줄 끝에 blame 표시" },
+        "localLens.codeLens.enabled": { "type": "boolean", "default": true, "description": "파일 상단에 최근 변경/작성자 CodeLens 표시" },
+        "localLens.statusBar.enabled": { "type": "boolean", "default": true, "description": "상태바에 현재 줄 blame 표시" }
+      }
+    }
+  }
+}
